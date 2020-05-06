@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gpu-operator
+  template:
+    metadata:
+      labels:
+        name: gpu-operator
+    spec:
+      serviceAccountName: gpu-operator
+      containers:
+        - name: gpu-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - gpu-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "gpu-operator"
